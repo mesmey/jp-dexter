@@ -2,6 +2,8 @@
 
 Prototype jouable d’un jeu de devinettes multijoueur : interface HTML/CSS/JavaScript, API Python FastAPI et base SQLite en local. L’API peut utiliser PostgreSQL pour un déploiement avec une base hébergée.
 
+Le pied de page public crédite **Mesmey Pro** et propose un lien de contact vers `mesmey.pro@gmail.com`.
+
 ## Lancer en local
 
 1. Installe Python 3.11 ou plus récent.
