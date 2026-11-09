@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111827">
+    <title>Just Price Dexter</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="brand">
+        <div class="brand-mark" aria-hidden="true">?</div>
+        <div>
+          <p class="eyebrow">COMPÉTITION EN LIGNE</p>
+          <h1>Just Price <span>Dexter</span></h1>
+        </div>
+      </header>
+
+      <section id="auth" class="panel auth-panel">
+        <p class="eyebrow">BIENVENUE</p>
+        <h2>Entre dans la partie</h2>
+        <p class="muted">Crée un pseudo ou retrouve ton compte.</p>
+        <form id="auth-form" class="stack">
+          <label>Pseudo
+            <input id="username" name="username" minlength="3" maxlength="20" required autocomplete="username" placeholder="Dexter_01">
+          </label>
+          <label>Mot de passe
+            <input id="password" name="password" type="password" minlength="8" maxlength="128" required autocomplete="current-password" placeholder="8 caractères minimum">
+          </label>
+          <button id="auth-submit" class="button primary" type="submit">Se connecter</button>
+        </form>
+        <button id="auth-toggle" class="text-button" type="button">Pas encore de compte ? S’inscrire</button>
+        <p id="auth-error" class="notice error" role="alert"></p>
+      </section>
+
+      <section id="game" class="hidden">
+        <div class="topbar panel">
+          <div>
+            <span class="muted">Joueur</span>
+            <strong id="player-name"></strong>
+          </div>
+          <div class="wallet">
+            <span>🪙 <b id="tokens">0</b> tokens</span>
+            <span>⭐ <b id="points">0</b> points</span>
+          </div>
+          <button id="logout" class="button quiet" type="button">Déconnexion</button>
+        </div>
+
+        <div id="home-view" class="layout">
+          <section class="panel">
+            <p class="eyebrow">TON COMPTE</p>
+            <h2>Prêt à jouer ?</h2>
+            <button id="daily" class="button secondary" type="button">Récupérer mes 20 tokens quotidiens</button>
+            <p id="daily-status" class="muted small"></p>
+            <hr>
+            <h3>La boutique</h3>
+            <p class="muted small">10 tokens = 1 point · 1 point converti = 7 tokens</p>
+            <form id="buy-form" class="inline-form">
+              <label class="sr-only" for="buy-quantity">Points à acheter</label>
+              <input id="buy-quantity" type="number" min="1" max="10000" value="1" required>
+              <button class="button primary" type="submit">Acheter des points</button>
+            </form>
+            <form id="convert-form" class="inline-form">
+              <label class="sr-only" for="convert-quantity">Points à convertir</label>
+              <input id="convert-quantity" type="number" min="1" max="10000" value="1" required>
+              <button class="button quiet" type="submit">Convertir en tokens</button>
+            </form>
+            <p id="account-notice" class="notice" role="status"></p>
+          </section>
+
+          <section class="panel">
+            <p class="eyebrow">LES ROOMS</p>
+            <h2>Rejoindre une partie</h2>
+            <form id="join-form" class="inline-form">
+              <label class="sr-only" for="join-code">Code de room</label>
+              <input id="join-code" maxlength="6" minlength="6" placeholder="CODE" required>
+              <button class="button secondary" type="submit">Rejoindre avec un code</button>
+            </form>
+            <div class="section-heading">
+              <h3>Rooms publiques</h3>
+              <button id="refresh-rooms" class="text-button" type="button">Actualiser</button>
+            </div>
+            <div id="room-list" class="room-list"></div>
+            <hr>
+            <h3>Créer une room</h3>
+            <form id="create-form" class="stack compact">
+              <label>Nom de la room
+                <input id="room-name" maxlength="32" minlength="2" value="Partie Dexter" required>
+              </label>
+              <label class="check-label"><input id="room-private" type="checkbox"> Room privée (code requis)</label>
+              <button class="button primary" type="submit">Créer une room</button>
+            </form>
+            <p id="room-notice" class="notice" role="status"></p>
+          </section>
+        </div>
+
+        <section id="room-view" class="panel hidden">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">ROOM <span id="room-code"></span></p>
+              <h2 id="room-title"></h2>
+            </div>
+            <button id="leave-room" class="button quiet" type="button">Quitter</button>
+          </div>
+          <div id="room-content"></div>
+          <div class="room-store subpanel">
+            <h3>Boutique de la room</h3>
+            <p class="muted small">Besoin de revenir dans la manche ? 10 tokens = 1 point. Tu peux aussi convertir tes points au taux de 7 tokens par point.</p>
+            <form id="room-buy-form" class="inline-form">
+              <label class="sr-only" for="room-buy-quantity">Points à acheter</label>
+              <input id="room-buy-quantity" type="number" min="1" max="10000" value="1" required>
+              <button class="button primary" type="submit">Acheter des points</button>
+            </form>
+            <form id="room-convert-form" class="inline-form">
+              <label class="sr-only" for="room-convert-quantity">Points à convertir</label>
+              <input id="room-convert-quantity" type="number" min="1" max="10000" value="1" required>
+              <button class="button quiet" type="submit">Convertir en tokens</button>
+            </form>
+            <p id="room-store-notice" class="notice" role="status"></p>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="/config.js"></script>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
