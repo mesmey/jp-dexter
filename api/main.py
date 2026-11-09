@@ -21,6 +21,8 @@ from sqlalchemy import create_engine, text
 ROOT = Path(__file__).resolve().parent.parent
 WEB_DIR = ROOT / "web"
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{ROOT / 'justprice.db'}")
+if os.getenv("VERCEL") and not os.getenv("DATABASE_URL"):
+    raise RuntimeError("Set DATABASE_URL in the Vercel project environment variables.")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
 elif DATABASE_URL.startswith("postgresql://"):
@@ -29,6 +31,8 @@ elif DATABASE_URL.startswith("postgresql://"):
 engine_options: dict[str, Any] = {"pool_pre_ping": True}
 if DATABASE_URL.startswith("sqlite:"):
     engine_options["connect_args"] = {"check_same_thread": False}
+else:
+    engine_options["connect_args"] = {"prepare_threshold": None}
 engine = create_engine(DATABASE_URL, **engine_options)
 mutation_lock = threading.RLock()
 TURN_SECONDS = 15

@@ -35,24 +35,35 @@ Prototype jouable d’un jeu de devinettes multijoueur : interface HTML/CSS/Java
 
 Les connexions utilisent un pseudo et un mot de passe. Les mots de passe sont stockés sous forme de dérivés PBKDF2 ; le navigateur conserve un jeton de session révocable à expiration.
 
-## Publication gratuite (prototype)
+## Déploiement sur Vercel et Supabase
 
-Le site statique peut être publié sur Cloudflare Pages ou Netlify. L’API FastAPI peut être déployée sur Render et la base de données sur le plan gratuit de Supabase. Les quotas, périodes de veille et conditions des offres gratuites peuvent changer ; ils conviennent à un prototype, pas à une disponibilité garantie.
+Vercel peut héberger l’API FastAPI et servir les fichiers HTML/CSS/JavaScript depuis le même projet. Supabase fournit PostgreSQL. `app.py` est l’entrée FastAPI détectée par Vercel ; l’API et le site utilisent ainsi la même origine. Le navigateur n’a pas accès à l’adresse de la base.
 
-### API sur Render
+### 1. Choisir la bonne connexion Supabase
 
-Le fichier `render.yaml` déclare le service. Lors de la configuration, définis :
+Comme Vercel exécute des fonctions serverless, utilise **Connect → Connection string → Transaction pooler** dans le tableau de bord Supabase. Copie son URI PostgreSQL et remplace `[YOUR-PASSWORD]` par le mot de passe de la base. N’utilise pas l’adresse Direct ni le Session pooler pour Vercel. Encode les caractères réservés du mot de passe dans l’URL. Le backend désactive les prepared statements pour être compatible avec le transaction pooler.
 
-- `DATABASE_URL` : chaîne PostgreSQL de Supabase avec le pilote `postgresql://...` ou `postgres://...`.
-- `CORS_ORIGINS` : URL exacte du site publié (par exemple `https://mon-jeu.pages.dev`), sans slash final.
+Ne mets jamais cette URL dans le dépôt, dans `web/config.js` ou dans le navigateur.
 
-Le service démarre avec un seul worker pour sérialiser les modifications de partie. N’utilise pas SQLite sur un hébergement éphémère : ses fichiers peuvent disparaître lors d’un redéploiement ou d’un redémarrage.
+### 2. Importer le dépôt GitHub dans Vercel
 
-### Site statique
+1. Connecte-toi sur [vercel.com](https://vercel.com/) avec GitHub.
+2. Choisis **Add New → Project** et importe `mesmey/jp-dexter`.
+3. Garde la racine du dépôt comme **Root Directory** ; ne choisis pas le sous-dossier `web`.
+4. Vercel détecte `requirements.txt` et `app.py`. Garde les réglages de build par défaut et déploie.
+5. Dans **Project → Settings → Environment Variables**, ajoute `DATABASE_URL` avec l’URI PostgreSQL Supabase complète pour Production (et Preview si souhaité), puis redéploie.
 
-Publie le dossier `web/` en tant que site statique. Avant publication, remplace la valeur vide de `GAME_API_URL` dans `web/config.js` par l’URL publique de l’API Render, par exemple `https://mon-api.onrender.com`.
+L’application refuse explicitement de démarrer sur Vercel si `DATABASE_URL` manque. En local, elle utilise SQLite.
 
-Pour tester le site séparément en local, ouvre-le via un serveur HTTP statique (pas directement en `file://`) et ajoute son origine à `CORS_ORIGINS`.
+### 3. Vérifier le déploiement
+
+Ouvre `https://<ton-projet>.vercel.app/health` : la réponse attendue est `{"status":"ok"}`. Puis ouvre la racine du site, crée un compte et vérifie le flux de jeu avec deux navigateurs/comptes. La base Supabase reste privée ; seules les requêtes de l’API accèdent à PostgreSQL.
+
+Les limites du plan gratuit et les règles de disponibilité peuvent changer. Le déploiement convient à une bêta, pas à une disponibilité permanente garantie. Les fonctions serverless peuvent traiter des requêtes simultanées depuis plusieurs instances ; ce prototype est destiné à des essais et ne fournit pas encore de verrouillage distribué pour les manches très disputées.
+
+## Ancien déploiement Render
+
+`render.yaml` est conservé comme configuration alternative si tu souhaites revenir à Render. Pour séparer le site statique d’une API distante, `web/config.js` accepte une URL d’API dans `GAME_API_URL`; avec le déploiement Vercel ci-dessus, laisse-la vide pour utiliser la même origine.
 
 ## Périmètre du prototype
 
